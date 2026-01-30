@@ -51,6 +51,15 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('request_history', async () => {
+    try {
+      const history = await moodEngine.getHistory();
+      socket.emit('history_update', history);
+    } catch (error) {
+      console.error('Error getting history:', error);
+    }
+  });
+
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id);
   });
@@ -65,9 +74,20 @@ setInterval(async () => {
   }
 }, 10000);
 
+setInterval(async () => {
+  try {
+    await moodEngine.createDailySnapshot();
+    console.log('Daily snapshot created');
+  } catch (error) {
+    console.error('Error creating daily snapshot:', error);
+  }
+}, 24 * 60 * 60 * 1000);
+
 async function start() {
   try {
     await connectDatabase(MONGODB_URI);
+    
+    await moodEngine.createDailySnapshot();
     
     httpServer.listen(PORT, () => {
       console.log(`✓ Server running on port ${PORT}`);

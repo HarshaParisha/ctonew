@@ -1,4 +1,5 @@
 import MoodTapModel from '../models/MoodTap.js';
+import HistorySnapshotModel from '../models/HistorySnapshot.js';
 import { MoodType, MoodData, GlobalStats, MoodMessage } from '../types.js';
 
 const MOOD_WEIGHTS: { [key in MoodType]: number } = {
@@ -141,5 +142,37 @@ export class MoodEngine {
   }): Promise<void> {
     const moodTap = new MoodTapModel(tap);
     await moodTap.save();
+  }
+
+  async createDailySnapshot(): Promise<void> {
+    const today = new Date().toISOString().split('T')[0];
+    
+    const existingSnapshot = await HistorySnapshotModel.findOne({ date: today });
+    if (existingSnapshot) {
+      return;
+    }
+
+    const stats = await this.calculateGlobalStats();
+    
+    const snapshot = new HistorySnapshotModel({
+      date: today,
+      worldMoodIndex: stats.worldMoodIndex,
+      countryData: stats.countryData,
+      timestamp: Date.now(),
+    });
+
+    await snapshot.save();
+  }
+
+  async getHistory(limit: number = 30): Promise<any[]> {
+    const snapshots = await HistorySnapshotModel.find()
+      .sort({ date: -1 })
+      .limit(limit);
+    
+    return snapshots.map(s => ({
+      date: s.date,
+      worldMoodIndex: s.worldMoodIndex,
+      countryData: s.countryData,
+    }));
   }
 }
