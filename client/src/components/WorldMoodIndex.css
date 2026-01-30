@@ -1,0 +1,119 @@
+.world-mood-index {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.status-dot.connected {
+  background: #00ff00;
+  box-shadow: 0 0 10px #00ff00;
+}
+
+.status-dot.disconnected {
+  background: #ff4444;
+  box-shadow: 0 0 10px #ff4444;
+  animation: none;
+}
+
+.status-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mood-card {
+  background: rgba(20, 20, 20, 0.8);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 30px 50px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.mood-title {
+  margin: 0 0 15px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.mood-value {
+  font-size: 4rem;
+  font-weight: 700;
+  margin: 10px 0;
+  text-shadow: 0 0 30px currentColor;
+  font-variant-numeric: tabular-nums;
+}
+
+.mood-bar {
+  width: 300px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 20px 0 10px 0;
+}
+
+.mood-bar-fill {
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 10px currentColor;
+  transition: width 1s ease-out;
+}
+
+.mood-scale {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+@media (max-width: 768px) {
+  .world-mood-index {
+    top: 10px;
+  }
+
+  .mood-card {
+    padding: 20px 30px;
+  }
+
+  .mood-value {
+    font-size: 3rem;
+  }
+
+  .mood-bar {
+    width: 200px;
+  }
+}

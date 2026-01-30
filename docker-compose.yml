@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: moodpop-mongodb
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=moodpop
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: moodpop-server
+    restart: unless-stopped
+    ports:
+      - '5000:5000'
+    environment:
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/moodpop
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: moodpop-client
+    restart: unless-stopped
+    ports:
+      - '3000:80'
+    depends_on:
+      - server
+
+volumes:
+  mongodb_data:
